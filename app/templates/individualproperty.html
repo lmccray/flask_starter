@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block main %}
+  <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <div class="contain">
+    <div class="card mb-3 borderCol" style="max-width: 1500px;">
+      <div class="row no-gutters">
+        <div class="col-md-4">
+          <img src="{{ url_for('static', filename="uploads/"+user.photo) }}" class="card-img" alt="...">
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <p class="card-text" id ="heading"> {{user.propertytitle}} </p>
+                <div class="element-wrap">
+                <p class="card-text" id ="pptype"></i> {{user.price}} </p>
+                <p class="card-text" id="ptype"></i> {{user.propertytype}} </p>
+               </div>
+                <p class="card-text" id="userdescription"></i> {{user.description}} </p>
+                <div class="element-wrap2">
+                <p class="card-text description"><i class="fa fa-bed"></i> {{user.numbedrooms}} Bedrooms</p>
+                <p class="card-text description"><i class="fa fa-bath"></i> {{user.numbathrooms}} Bathrooms</p>
+               </div>
+                <p class="card-text" id ="location"><i class="fa fa-map-marker" ></i> {{user.location}} </p>
+                <button class="btn btn-primary" name="email">Email Realtor</button>
+            </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

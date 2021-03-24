@@ -1,0 +1,21 @@
+
+{% extends "base.html" %}
+
+{% block main %}
+        <h1>Properties</h1>
+        {% for user in users %}
+        <div class="loop">
+        <div class="card">
+        <img src="{{ url_for('static', filename="uploads/"+user.photo) }}" class="card-img-top" alt="Card image">
+        <div class="card-body">
+        <p class="card-text" id= "property"> {{user.propertytitle}} </p>
+        <p class="card-text" id ="description"><i class="fa fa-map-marker" style="color: grey"></i> {{user.location}} </p>
+        <p class="card-text" id="propertyprice">{{user.price}} </p>
+        </div>
+        <div class="panel-footer">
+        <button type="button" class="btn btn-primary" id="buttn" name="view" onclick="window.location.href='{{ url_for( 'propertyId' , userid=user.id ) }}';">View Property</button>
+        </div>
+        </div>
+        </div>
+        {% endfor %}
+{% endblock %}

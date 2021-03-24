@@ -4,10 +4,12 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
-from app import app
-from flask import render_template, request, redirect, url_for
-
+import os
+from app import app, db
+from flask import render_template, request, redirect, url_for, flash
+from werkzeug.utils import secure_filename
+from app.forms import UserForm
+from app.models import UserProfile
 
 ###
 # Routing for your application.
@@ -22,8 +24,50 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html', name="Leonard McCray")
 
+@app.route('/property', methods=['GET','POST'])
+def addProperty():
+    form= UserForm()
+    if request.method == "POST":
+        if form.validate_on_submit() == True:
+            #Gets the user input from the form
+            propertytitle = form.propertytitle.data
+            numbedrooms = form.numbedrooms.data
+            numbathrooms = form.numbathrooms.data
+            location = form.location.data
+            price = form.price.data
+            propertytype = form.propertytype.data
+            description = form.description.data
+            filename = Photouploader(form.photo.data)
+
+            # Tocreate user object and add to database
+            user = UserProfile(propertytitle, description, numbedrooms, numbathrooms, price, propertytype, location, filename)
+            db.session.add(user)
+            db.session.commit()
+
+            flash('Property Information Uploaded.', 'Success')
+        else:
+            flash('Property Information Not Uploaded','Danger')
+        return redirect(url_for("properties")) 
+    return render_template("addproperty.html", form=form)
+
+
+def Photouploader(upl):
+    filename = secure_filename(upl.filename)
+    upl.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    return filename
+
+
+@app.route("/properties")
+def properties():
+    user_profiles = db.session.query(UserProfile).all()
+    return render_template("propertylisting.html", users=user_profiles)
+
+@app.route("/property/<userid>")
+def propertyId(userid):
+    user = db.session.query(UserProfile).filter_by(id=int(userid)).first()
+    return render_template("individualproperty.html", user=user)
 
 ###
 # The functions below should be applicable to all Flask apps.
